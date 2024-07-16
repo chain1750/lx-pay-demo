@@ -1,4 +1,4 @@
-package com.lx.pay.properties;
+package com.lx.pay.core;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

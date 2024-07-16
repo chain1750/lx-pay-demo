@@ -3,7 +3,6 @@ package com.lx.pay.core;
 import cn.hutool.core.lang.Assert;
 import com.lx.pay.dao.entity.PayTrade;
 import com.lx.pay.dao.entity.RefundTrade;
-import com.lx.pay.properties.InProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
