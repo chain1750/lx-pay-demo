@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,9 +16,6 @@ import java.time.LocalDateTime;
  * @author chenhaizhuang
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @TableName("pay_trade")
 public class PayTrade {
 
@@ -56,7 +50,7 @@ public class PayTrade {
     /**
      * 入口
      */
-    private String entrance;
+    private String in;
 
     /**
      * 用户IP
