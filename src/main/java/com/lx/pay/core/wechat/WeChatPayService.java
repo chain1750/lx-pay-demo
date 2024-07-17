@@ -35,9 +35,6 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public abstract class WeChatPayService implements IPayService {
 
-    protected static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern(DatePattern.UTC_WITH_XXX_OFFSET_PATTERN);
-
     protected WeChatPayProperties weChatPayProperties;
 
     protected NotifyUrlProperties notifyUrlProperties;
@@ -150,7 +147,8 @@ public abstract class WeChatPayService implements IPayService {
         } else if (Transaction.TradeStateEnum.SUCCESS == tradeState) {
             tradeResult.setStatus(PayStatusEnum.PAY_SUCCESS.getValue());
             tradeResult.setFinishTime(OffsetDateTime
-                    .parse(transaction.getSuccessTime(), FORMATTER)
+                    .parse(transaction.getSuccessTime(),
+                            DateTimeFormatter.ofPattern(DatePattern.UTC_WITH_XXX_OFFSET_PATTERN))
                     .toLocalDateTime());
         } else {
             tradeResult.setStatus(PayStatusEnum.PAY_CLOSED.getValue());
@@ -177,7 +175,8 @@ public abstract class WeChatPayService implements IPayService {
         } else if (Status.SUCCESS == status) {
             tradeResult.setStatus(RefundStatusEnum.REFUND_SUCCESS.getValue());
             tradeResult.setFinishTime(OffsetDateTime
-                    .parse(refund.getSuccessTime(), FORMATTER)
+                    .parse(refund.getSuccessTime(),
+                            DateTimeFormatter.ofPattern(DatePattern.UTC_WITH_XXX_OFFSET_PATTERN))
                     .toLocalDateTime());
         } else {
             tradeResult.setStatus(RefundStatusEnum.REFUND_FAIL.getValue());

@@ -1,5 +1,6 @@
 package com.lx.pay.core.wechat;
 
+import cn.hutool.core.date.DatePattern;
 import com.lx.pay.core.NotifyUrlProperties;
 import com.lx.pay.core.TradeResult;
 import com.lx.pay.dao.entity.PayTrade;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 微信H5支付实现类
@@ -55,7 +57,8 @@ public class WeChatH5PayService extends WeChatPayService {
         prepayRequest.setMchid(WeChatPayFactory.getMerchant(weChatPayProperties, in).getMerchantId());
         prepayRequest.setDescription(payTrade.getDescription());
         prepayRequest.setOutTradeNo(payTrade.getTradeNo());
-        prepayRequest.setTimeExpire(payTrade.getExpireTime().atOffset(ZoneOffset.of("+08:00")).format(FORMATTER));
+        prepayRequest.setTimeExpire(payTrade.getExpireTime().atOffset(ZoneOffset.of("+08:00"))
+                .format(DateTimeFormatter.ofPattern(DatePattern.UTC_WITH_XXX_OFFSET_PATTERN)));
         prepayRequest.setNotifyUrl(notifyUrlProperties.getPayNotifyUrl(in));
         prepayRequest.setAmount(amount);
         prepayRequest.setSceneInfo(sceneInfo);
