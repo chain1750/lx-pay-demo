@@ -8,6 +8,7 @@ import com.alipay.api.request.AlipayTradeCreateRequest;
 import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.lx.pay.core.NotifyUrlProperties;
 import com.lx.pay.dao.entity.PayTrade;
+import com.lx.pay.exception.CustomizeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +51,7 @@ public class AlipayJsapiPayService extends AlipayPayService {
         try {
             response = alipayClient.execute(request);
         } catch (Exception e) {
-            throw new RuntimeException("支付宝小程序支付 预支付失败", e);
+            throw new CustomizeException("支付宝小程序支付 预支付失败", e);
         }
         Assert.isTrue(response.isSuccess(), "支付宝小程序支付 预支付失败：" + response.getSubMsg());
         return response.getBody();

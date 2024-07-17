@@ -3,6 +3,7 @@ package com.lx.pay.core.wechat;
 import com.lx.pay.core.NotifyUrlProperties;
 import com.lx.pay.core.TradeResult;
 import com.lx.pay.dao.entity.PayTrade;
+import com.lx.pay.exception.CustomizeException;
 import com.wechat.pay.java.core.util.GsonUtil;
 import com.wechat.pay.java.service.payments.app.model.Amount;
 import com.wechat.pay.java.service.payments.app.model.CloseOrderRequest;
@@ -57,7 +58,7 @@ public class WeChatAppPayService extends WeChatPayService {
                     .prepayWithRequestPayment(prepayRequest);
             return GsonUtil.toJson(prepayResponse);
         } catch (Exception e) {
-            throw new RuntimeException("微信APP支付 预支付失败", e);
+            throw new CustomizeException("微信APP支付 预支付失败", e);
         }
     }
 
@@ -73,7 +74,7 @@ public class WeChatAppPayService extends WeChatPayService {
             WeChatPayFactory.getAppServiceExtension(weChatPayProperties, in)
                     .closeOrder(closeOrderRequest);
         } catch (Exception e) {
-            throw new RuntimeException("微信APP支付 关闭支付失败", e);
+            throw new CustomizeException("微信APP支付 关闭支付失败", e);
         }
     }
 
@@ -91,7 +92,7 @@ public class WeChatAppPayService extends WeChatPayService {
 
             return buildTradeResult(transaction);
         } catch (Exception e) {
-            throw new RuntimeException("微信APP支付 查询支付失败", e);
+            throw new CustomizeException("微信APP支付 查询支付失败", e);
         }
     }
 }

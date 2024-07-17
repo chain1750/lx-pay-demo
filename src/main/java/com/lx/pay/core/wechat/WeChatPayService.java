@@ -9,6 +9,7 @@ import com.lx.pay.dao.entity.PayTrade;
 import com.lx.pay.dao.entity.RefundTrade;
 import com.lx.pay.enums.PayStatusEnum;
 import com.lx.pay.enums.RefundStatusEnum;
+import com.lx.pay.exception.CustomizeException;
 import com.wechat.pay.java.core.http.Constant;
 import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.payments.model.Transaction;
@@ -59,7 +60,7 @@ public abstract class WeChatPayService implements IPayService {
 
             return buildTradeResult(transaction);
         } catch (Exception e) {
-            throw new RuntimeException("微信支付 解析支付通知失败", e);
+            throw new CustomizeException("微信支付 解析支付通知失败", e);
         }
     }
 
@@ -83,7 +84,7 @@ public abstract class WeChatPayService implements IPayService {
         try {
             WeChatPayFactory.getRefundService(weChatPayProperties, in).create(createRequest);
         } catch (Exception e) {
-            throw new RuntimeException("微信支付 退款失败", e);
+            throw new CustomizeException("微信支付 退款失败", e);
         }
     }
 
@@ -99,7 +100,7 @@ public abstract class WeChatPayService implements IPayService {
 
             return buildTradeResult(refund);
         } catch (Exception e) {
-            throw new RuntimeException("微信支付 查询退款失败", e);
+            throw new CustomizeException("微信支付 查询退款失败", e);
         }
     }
 
@@ -127,7 +128,7 @@ public abstract class WeChatPayService implements IPayService {
             refund.setSuccessTime(refundNotification.getSuccessTime());
             return buildTradeResult(refund);
         } catch (Exception e) {
-            throw new RuntimeException("微信支付 解析退款通知失败", e);
+            throw new CustomizeException("微信支付 解析退款通知失败", e);
         }
     }
 

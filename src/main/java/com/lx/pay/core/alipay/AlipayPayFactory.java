@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
+import com.lx.pay.exception.CustomizeException;
 
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class AlipayPayFactory {
         Optional<AlipayPayProperties.Account> optionalAccount = alipayPayProperties.getAccounts().stream()
                 .filter(e -> e.getApps().containsKey(appId))
                 .findFirst();
-        return optionalAccount.orElseThrow(() -> new RuntimeException("入口没有可用的支付方式"));
+        return optionalAccount.orElseThrow(() -> new CustomizeException("入口没有可用的支付方式"));
     }
 
     public static synchronized AlipayClient getAlipayClient(AlipayPayProperties alipayPayProperties,
@@ -46,7 +47,7 @@ public class AlipayPayFactory {
             ALIPAY_CLIENT.put(appId, alipayClient);
             return alipayClient;
         } catch (Exception e) {
-            throw new RuntimeException("创建支付宝客户端失败", e);
+            throw new CustomizeException("创建支付宝客户端失败", e);
         }
     }
 }

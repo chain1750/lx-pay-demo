@@ -26,6 +26,7 @@ import com.lx.pay.dao.entity.PayTrade;
 import com.lx.pay.dao.entity.RefundTrade;
 import com.lx.pay.enums.PayStatusEnum;
 import com.lx.pay.enums.RefundStatusEnum;
+import com.lx.pay.exception.CustomizeException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ public abstract class AlipayPayService implements IPayService {
         try {
             response = alipayClient.execute(request);
         } catch (Exception e) {
-            throw new RuntimeException("支付宝支付 关闭支付失败", e);
+            throw new CustomizeException("支付宝支付 关闭支付失败", e);
         }
         Assert.isTrue(response.isSuccess() || "ACQ.TRADE_NOT_EXIST".equals(response.getSubCode()),
                 "支付宝支付 关闭支付失败：" + response.getSubMsg());
@@ -80,7 +81,7 @@ public abstract class AlipayPayService implements IPayService {
         try {
             response = alipayClient.execute(request);
         } catch (Exception e) {
-            throw new RuntimeException("支付宝支付 查询支付失败", e);
+            throw new CustomizeException("支付宝支付 查询支付失败", e);
         }
         Assert.isTrue(response.isSuccess() || "ACQ.TRADE_NOT_EXIST".equals(response.getSubCode()),
                 "支付宝支付 查询支付失败：" + response.getSubMsg());
@@ -109,7 +110,7 @@ public abstract class AlipayPayService implements IPayService {
         try {
             signVerified = AlipaySignature.rsaCheckV2(requestParam, account.getPublicKey(), "utf-8", "RSA2");
         } catch (Exception e) {
-            throw new RuntimeException("支付宝支付 解析支付通知失败", e);
+            throw new CustomizeException("支付宝支付 解析支付通知失败", e);
         }
         String sellerId = requestParam.get("seller_id");
         Assert.isTrue(signVerified && account.getSellerId().equals(sellerId), "支付宝支付 解析支付通知失败");
@@ -141,7 +142,7 @@ public abstract class AlipayPayService implements IPayService {
         try {
             response = alipayClient.execute(request);
         } catch (Exception e) {
-            throw new RuntimeException("支付宝支付 退款失败", e);
+            throw new CustomizeException("支付宝支付 退款失败", e);
         }
         Assert.isTrue(response.isSuccess(), "支付宝支付 退款失败：" + response.getSubMsg());
     }
@@ -162,7 +163,7 @@ public abstract class AlipayPayService implements IPayService {
         try {
             response = alipayClient.execute(request);
         } catch (Exception e) {
-            throw new RuntimeException("支付宝支付 查询退款失败", e);
+            throw new CustomizeException("支付宝支付 查询退款失败", e);
         }
         Assert.isTrue(response.isSuccess(), "支付宝支付 查询退款失败：" + response.getSubMsg());
         return buildTradeResult(response);
@@ -185,7 +186,7 @@ public abstract class AlipayPayService implements IPayService {
         try {
             signVerified = AlipaySignature.rsaCheckV2(requestParam, account.getPublicKey(), "utf-8", "RSA2");
         } catch (Exception e) {
-            throw new RuntimeException("支付宝支付 解析退款通知失败", e);
+            throw new CustomizeException("支付宝支付 解析退款通知失败", e);
         }
 
         String sellerId = requestParam.get("seller_id");
