@@ -7,7 +7,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
- * 全局配置
+ * 通知地址配置
  *
  * @author chenhaizhuang
  */
