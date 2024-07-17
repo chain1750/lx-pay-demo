@@ -56,3 +56,98 @@
 支付服务上提供退款接口，业务方可在支付完成之后发起退款。退款仅针对某次支付交易，即只能退某次支付交易上的总金额或部分金额。
 
 > 详细说明可查阅 `com.lx.pay.controller.BizController.refund()` 。
+
+## 配置所需要使用的支付方式
+
+#### 入口配置
+
+```yaml
+pay:
+  ins:
+    in1: wechatApp
+    in2: wechatJSAPI
+    in3: alipayApp
+```
+
+入口需要是全局唯一的。
+
+#### 微信支付配置
+
+> 不支持服务商代研模式，仅支持商家自研模式。
+> 使用v3的API实现。
+
+每个公司可能会有多个微信支付商户，所以支付服务需要支持多商户的微信支付方式。那么要实现多商户，则需要进行如下配置：
+
+```yaml
+pay:
+  wechat:
+    ins:
+      in1: appId1
+      in2: appId2
+      in3: appId3
+    merchants:
+      - merchant-id: ''
+        private-key-path: ''
+        serial-number: ''
+        api-v3-key: ''
+        appIds:
+          - appId1
+          - appId2
+      - merchant-id: ''
+        private-key-path: ''
+        serial-number: ''
+        api-v3-key: ''
+        appIds:
+          - appId3
+```
+
+- 配置入口与微信appId映射，两者处于一对一关系。
+- 每个商户都需要配置商户ID、私钥路径、证书序号、API v3 Key、商户绑定的appId列表。
+
+这样通过入口就可以获取到对应的appId，根据appId就可以找到对应的商户配置。
+
+支持的支付方式实现类Bean名：
+
+- wechatApp
+- wechatH5
+- wechatJSAPI
+- wechatNative
+
+#### 支付宝支付
+
+> 不支持服务商代研模式，仅支持商家自研模式。
+
+与微信一样，支持多支付宝帐户实现。
+
+```yaml
+pay:
+  alipay:
+    ins:
+      in1: appId1
+      in2: appId2
+      in3: appId3
+    server-url: ''
+    accounts:
+      - public-key: ''
+        apps:
+          appId1: private-key1
+          appId2: private-key2
+      - public-key: ''
+        apps:
+          appId2: private-key3
+```
+
+- 配置入口与支付宝appId映射，两者处于一对一关系。
+- 配置支付宝网关地址。
+- 每个帐号都需要配置支付宝公钥、appId与应用私钥的映射。
+
+支持的支付方式实现类Bean名：
+
+- alipayApp
+- alipayWap
+- alipayJSAPI
+- alipayPage
+
+## 关于通知说明
+
+todo
