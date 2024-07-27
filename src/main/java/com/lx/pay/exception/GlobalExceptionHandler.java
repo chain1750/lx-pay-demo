@@ -7,8 +7,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 /**
@@ -32,21 +30,6 @@ public class GlobalExceptionHandler {
                 .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(","));
         log.warn("参数校验异常：{}", msg);
-        return IResult.fail(msg);
-    }
-
-    /**
-     * 列表参数校验异常处理
-     *
-     * @param e 异常
-     * @return IResult
-     */
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public IResult<Void> handleConstraintViolationException(ConstraintViolationException e) {
-        String msg = e.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessageTemplate)
-                .collect(Collectors.joining(","));
-        log.warn("列表参数校验异常：{}", msg);
         return IResult.fail(msg);
     }
 

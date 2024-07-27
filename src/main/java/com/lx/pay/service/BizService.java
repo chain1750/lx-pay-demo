@@ -8,8 +8,6 @@ import com.lx.pay.model.resp.PrepayResp;
 import com.lx.pay.model.resp.QueryPayResp;
 import com.lx.pay.model.resp.RefundResp;
 
-import java.util.List;
-
 /**
  * @author chenhaizhuang
  */
@@ -45,12 +43,4 @@ public interface BizService {
      * @return RefundResp
      */
     RefundResp refund(RefundReq req);
-
-    /**
-     * 批量退款接口
-     *
-     * @param reqList 请求列表
-     * @return List
-     */
-    List<RefundResp> batchRefund(List<RefundReq> reqList);
 }

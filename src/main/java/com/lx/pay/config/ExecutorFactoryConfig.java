@@ -16,25 +16,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ExecutorFactoryConfig {
 
     /**
-     * 通用通知线程池
-     *
-     * @return Executor
-     */
-    @Bean(name = "commonExecutor")
-    public Executor commonExecutor() {
-        int corePoolSize = Runtime.getRuntime().availableProcessors();
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(corePoolSize);
-        executor.setMaxPoolSize(corePoolSize * 2);
-        executor.setQueueCapacity(1000);
-        executor.setKeepAliveSeconds(300);
-        executor.setThreadNamePrefix("common-executor-");
-        // 线程池满了，则让主线程执行任务
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        return executor;
-    }
-
-    /**
      * 回调通知线程池
      *
      * @return Executor
