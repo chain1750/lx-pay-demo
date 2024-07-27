@@ -7,7 +7,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 /**
@@ -23,15 +24,29 @@ public class GlobalExceptionHandler {
      * 参数校验异常处理
      *
      * @param e 异常
-     * @return Result
+     * @return IResult
      */
     @ExceptionHandler(value = BindException.class)
     public IResult<Void> handleBindException(BindException e) {
-        List<String> errors = e.getAllErrors().stream()
+        String msg = e.getAllErrors().stream()
                 .map(ObjectError::getDefaultMessage)
-                .collect(Collectors.toList());
-        String msg = String.join(",", errors);
+                .collect(Collectors.joining(","));
         log.warn("参数校验异常：{}", msg);
+        return IResult.fail(msg);
+    }
+
+    /**
+     * 列表参数校验异常处理
+     *
+     * @param e 异常
+     * @return IResult
+     */
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public IResult<Void> handleConstraintViolationException(ConstraintViolationException e) {
+        String msg = e.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessageTemplate)
+                .collect(Collectors.joining(","));
+        log.warn("列表参数校验异常：{}", msg);
         return IResult.fail(msg);
     }
 
@@ -39,7 +54,7 @@ public class GlobalExceptionHandler {
      * 业务异常处理
      *
      * @param e 异常
-     * @return Result
+     * @return IResult
      */
     @ExceptionHandler(value = {CustomizeException.class, IllegalArgumentException.class, IllegalStateException.class})
     public IResult<Void> handleRuntimeException(RuntimeException e) {
@@ -51,7 +66,7 @@ public class GlobalExceptionHandler {
      * 系统异常处理
      *
      * @param e 异常
-     * @return Result
+     * @return IResult
      */
     @ExceptionHandler(value = Exception.class)
     public IResult<Void> handleException(Exception e) {

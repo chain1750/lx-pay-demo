@@ -25,16 +25,21 @@ import com.lx.pay.model.resp.PrepayResp;
 import com.lx.pay.model.resp.QueryPayResp;
 import com.lx.pay.model.resp.RefundResp;
 import com.lx.pay.service.BizService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author chenhaizhuang
@@ -54,6 +59,13 @@ public class BizServiceImpl implements BizService {
 
     @Autowired
     private IPayService payService;
+
+    @Autowired
+    private BizService bizService;
+
+    @Autowired
+    @Qualifier("commonExecutor")
+    private Executor commonExecutor;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -243,11 +255,29 @@ public class BizServiceImpl implements BizService {
             payService.refund(refundTrade);
 
             // 退款交易ID
-            RefundResp resp = new RefundResp();
+            RefundResp resp = BeanUtil.copyProperties(req, RefundResp.class);
             resp.setTradeNo(refundTrade.getTradeNo());
+            resp.setOperateFlag(Boolean.TRUE);
             return resp;
         } finally {
             lock.unlock();
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public List<RefundResp> batchRefund(List<RefundReq> reqList) {
+        List<CompletableFuture<RefundResp>> futureList = reqList.stream()
+                .map(req -> CompletableFuture.supplyAsync(() -> {
+                    RefundResp resp;
+                    try {
+                        resp = bizService.refund(req);
+                    } catch (Exception e) {
+                        resp = BeanUtil.copyProperties(req, RefundResp.class);
+                        resp.setOperateFlag(Boolean.FALSE);
+                    }
+                    return resp;
+                }, commonExecutor)).collect(Collectors.toList());
+        return futureList.stream().map(CompletableFuture::get).collect(Collectors.toList());
     }
 }

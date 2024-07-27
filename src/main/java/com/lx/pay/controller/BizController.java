@@ -10,11 +10,13 @@ import com.lx.pay.model.resp.QueryPayResp;
 import com.lx.pay.model.resp.RefundResp;
 import com.lx.pay.service.BizService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 业务接口<br>
@@ -23,6 +25,7 @@ import javax.validation.Valid;
  * @author chenhaizhuang
  */
 @RestController
+@Validated
 public class BizController {
 
     @Autowired
@@ -71,5 +74,16 @@ public class BizController {
     @PostMapping("/refund")
     public IResult<RefundResp> refund(@Valid @RequestBody RefundReq req) {
         return IResult.success(bizService.refund(req));
+    }
+
+    /**
+     * 批量退款接口
+     *
+     * @param reqList 请求列表
+     * @return IResult
+     */
+    @PostMapping("/batchRefund")
+    public IResult<List<RefundResp>> batchRefund(@RequestBody List<@Valid RefundReq> reqList) {
+        return IResult.success(bizService.batchRefund(reqList));
     }
 }
